@@ -18,8 +18,11 @@ class FileRecords:
         self.heart_rate_time_offset = heart_rate_time_offset
 
 
-def from_fit_file(file_path: str,
-                  friendly_name: str | None = None) -> FileRecords:
+def from_fit_file(
+    file_path: str,
+    friendly_name: str | None = None,
+    heart_rate_time_offset: timedelta = timedelta()
+) -> FileRecords:
     stream = Stream.from_file(file_path)
     decoder = Decoder(stream)
     messages, _errors = decoder.read()
@@ -30,11 +33,14 @@ def from_fit_file(file_path: str,
         if "heart_rate" in record.keys() and record["heart_rate"] != None
     ]
     return FileRecords(friendly_name if friendly_name != None else file_path,
-                       heart_rate_records)
+                       heart_rate_records, heart_rate_time_offset)
 
 
-def from_tcx_file(file_path: str,
-                  friendly_name: str | None = None) -> FileRecords:
+def from_tcx_file(
+    file_path: str,
+    friendly_name: str | None = None,
+    heart_rate_time_offset: timedelta = timedelta()
+) -> FileRecords:
     empty_file_records = FileRecords(file_path, [])
     heart_rate_records: list[HeartRateRecord] = []
 
@@ -76,4 +82,4 @@ def from_tcx_file(file_path: str,
                                         float(heart_rate_value.text)))
 
     return FileRecords(friendly_name if friendly_name != None else file_path,
-                       heart_rate_records)
+                       heart_rate_records, heart_rate_time_offset)
