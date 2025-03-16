@@ -25,7 +25,8 @@ def from_fit_file(file_path: str,
     records = messages["record_mesgs"]
     heart_rate_records: list[HeartRateRecord] = [
         HeartRateRecord(record["timestamp"], record["heart_rate"])
-        for record in records if record["heart_rate"] != None
+        for record in records
+        if "heart_rate" in record.keys() and record["heart_rate"] != None
     ]
     return FileRecords(friendly_name if friendly_name != None else file_path,
                        heart_rate_records)
